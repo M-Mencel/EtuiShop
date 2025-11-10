@@ -1,0 +1,22 @@
+﻿@model Etui.Models.Support
+
+@{
+}
+</br>
+</br>
+
+<div align="Center">
+    </div>
+<hr />
+<div class="row">
+        <p> Twoje zgłoszenie zostało przyjęte.</p>
+</div>
+
+<div>
+    <a asp-action="Create">Powrót do formularza zgłoszenia</a>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

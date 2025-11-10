@@ -1,0 +1,55 @@
+# --- Build and output directories ---
+[Bb]in/
+[Oo]bj/
+out/
+artifacts/
+
+# --- User-specific and IDE settings ---
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# --- Logs and temporary files ---
+*.log
+*.tlog
+*.tmp
+*.temp
+*.bak
+
+# --- Entity Framework and secrets ---
+appsettings.Development.json
+secrets.json
+
+# --- Resharper / Rider ---
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# --- Test and coverage output ---
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.coverage
+*.coveragexml
+coverage/
+
+# --- NuGet packages ---
+*.nupkg
+*.snupkg
+*.nuspec
+packages/
+!packages/*/packages.config
+
+# --- OS generated files ---
+.DS_Store
+Thumbs.db
+
+# --- Misc ---
+ScaffoldingReadMe.txt
+
+appsettings.json
+appsettings.Development.json
+secrets.json

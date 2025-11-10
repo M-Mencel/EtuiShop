@@ -1,0 +1,68 @@
+﻿@model Etui.Models.Dane
+
+@{
+    ViewData["Title"] = "Dane";
+}
+
+<h4>Dane do wysyłki</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="imie" class="control-label"></label>
+                <input asp-for="imie" class="form-control" />
+                <span asp-validation-for="imie" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="nazwisko" class="control-label"></label>
+                <input asp-for="nazwisko" class="form-control" />
+                <span asp-validation-for="nazwisko" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="email" class="control-label"></label>
+                <input asp-for="email" class="form-control" />
+                <span asp-validation-for="email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ulica" class="control-label"></label>
+                <input asp-for="ulica" class="form-control" />
+                <span asp-validation-for="ulica" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="nrdomu" class="control-label"></label>
+                <input asp-for="nrdomu" class="form-control" />
+                <span asp-validation-for="nrdomu" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="nrlokalu" class="control-label"></label>
+                <input asp-for="nrlokalu" class="form-control" />
+                <span asp-validation-for="nrlokalu" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="kodpocztowy" class="control-label"></label>
+                <input asp-for="kodpocztowy" class="form-control" />
+                <span asp-validation-for="kodpocztowy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="miejscowosc" class="control-label"></label>
+                <input asp-for="miejscowosc" class="form-control" />
+                <span asp-validation-for="miejscowosc" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="nrtelefonu" class="control-label"></label>
+                <input asp-for="nrtelefonu" class="form-control" />
+                <span asp-validation-for="nrtelefonu" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                 <a asp-controller="Cart" asp-action="Summary" class="btn btn-sm btn-outline-success">Zapłać</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

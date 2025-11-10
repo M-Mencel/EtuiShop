@@ -1,0 +1,31 @@
+﻿@model SmallCartViewModel
+
+@if (Model != null && Model.NumberOfItems > 0)
+{
+    <li class="dropdown-item-text text-center fw-semibold">
+        <i class="fa-solid fa-cart-shopping me-1"></i> Twój koszyk
+    </li>
+    <li class="dropdown-item-text">
+        Przedmioty: <strong>@Model.NumberOfItems</strong>
+    </li>
+    <li class="dropdown-item-text mb-2">
+        Łącznie: <span class="text-success fw-bold">@Model.TotalAmount.ToString("C2")</span>
+    </li>
+    <li><hr class="dropdown-divider" /></li>
+    <li>
+        <a class="dropdown-item text-primary" asp-controller="Cart" asp-action="Index">
+            <i class="fa-solid fa-cart-arrow-down me-1"></i> Przejdź do koszyka
+        </a>
+    </li>
+    <li>
+        <a class="dropdown-item text-danger fw-bold" asp-controller="Cart" asp-action="Clear">
+            <i class="fa-solid fa-trash me-1"></i> Wyczyść koszyk
+        </a>
+    </li>
+}
+else
+{
+    <li class="dropdown-item-text text-muted text-center">
+        <i class="fa-solid fa-cart-shopping me-1"></i> Koszyk jest pusty
+    </li>
+}

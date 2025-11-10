@@ -1,0 +1,57 @@
+﻿@model IEnumerable<Product>
+
+@{
+        ViewData["Title"] = "Products";
+        }
+
+<h1>Produkty</h1>
+
+<div class="row">
+        @foreach (var item in Model)
+        {
+
+                    <div class="col-md-4">
+                        <div class="card mb-4 product-wap rounded-0">
+                            <div class="card rounded-0">
+                                    
+                            <img src="~/media/products/@item.Image" class="card-img rounded-0 " alt="" width="200px" height="340px" />
+                                  
+                            </div>
+                        <div class="card-body text-center">
+                                <td>
+                                    @Html.ActionLink(item.Name, "Details",new { ID = item.Id })
+                                </td>
+                        <div class="h3 text-decoration-none">
+                                @Html.Raw(item.Description)
+                        </div>
+                        <p>
+                                @item.Price.ToString("C2")
+                        </p>
+                        
+                        <p>
+                        <div class="col-md-12 text-center">
+                        <a class="btn btn-light" asp-controller="Cart" asp-action="Add" asp-route-id="@item.Id"><i class="fa-solid fa-cart-shopping"> Dodaj do koszyka</i></a>
+                        </div>
+                    </p>
+                        </div>
+                </div>
+                    </div>
+
+
+
+
+        }
+
+    @if (ViewBag.TotalPages > 1)
+    {
+                    <div class="d-flex w-100 justify-content-center">
+                            <pagination page-count="@ViewBag.TotalPages"
+                            page-target="/products/@ViewBag.CategorySlug"
+                            page-number="@ViewBag.PageNumber"
+                            page-range="@ViewBag.PageRange">
+                            </pagination>
+                    </div>
+    }
+       
+
+</div>

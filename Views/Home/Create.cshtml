@@ -1,0 +1,54 @@
+﻿@model Etui.Models.Support
+
+@{
+    ViewData["Title"] = "Create";
+}
+</br>
+</br>
+
+<div align="Center">
+<h1>Formularz kontaktowy</h1>
+    </div>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="nazwa" class="control-label"></label>
+                <input asp-for="nazwa" class="form-control" />
+                <span asp-validation-for="nazwa" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="email" class="control-label"></label>
+                <input asp-for="email" class="form-control" />
+                <span asp-validation-for="email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="temat" class="control-label"></label>
+                <input asp-for="temat" class="form-control" />
+                <span asp-validation-for="temat" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="wiadomosc" class="control-label"></label>
+                <textarea input asp-for="wiadomosc" rows="14" class="form-control"></textarea>
+                <span asp-validation-for="wiadomosc" class="text-danger"></span>
+            </div>
+            </br>
+            <div align="Center">
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+               </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Create">Powrót do formularza zgłoszenia</a>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

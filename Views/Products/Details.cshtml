@@ -1,0 +1,47 @@
+﻿@model Etui.Models.Product
+
+
+
+@{
+    ViewData["Title"] = "Details";
+}
+</br>
+</br>
+<h1 align="center" style="font-weight:bold;">@Html.DisplayFor(model => model.Name)</h1>
+<div class="container">
+    <hr />
+    
+    <div class="row">
+        <div class="col-sm">
+            <img src="~/media/products/@Html.DisplayFor(model => model.Image)" width="500" height="500" />
+        </div>
+
+        <div class="col-sm">
+            @Html.DisplayFor(model => model.Description)
+
+            <div class="col-sm">
+
+            @Html.DisplayFor(model => model.Model)
+            </div>
+        </div>
+        <div class="col-md-4 mr-auto">
+            <font style="font-weight:bold; font-size: 20px;">
+                        @Html.DisplayNameFor(model => model.Price) 
+
+            @Html.DisplayFor(model => model.Price)
+            zł
+            </font>
+            <div class="col"></div>
+            <div class="col-sm" >
+            <a class="btn btn-primary" asp-controller="Cart" asp-action="Add" asp-route-id="@Model.Id">Dodaj do koszyka</a>
+            </div>
+
+        </div>
+    </div>
+
+    
+
+    <div>
+
+    </div>
+</div>

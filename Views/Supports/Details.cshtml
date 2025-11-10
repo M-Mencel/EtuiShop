@@ -1,0 +1,42 @@
+﻿@model Etui.Models.Support
+
+@{
+    ViewData["Title"] = "Zgłoszenia";
+}
+
+<h1>Zgłoszenia</h1>
+
+<div>
+    <h4>Support</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.nazwa)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.nazwa)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.email)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.email)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.temat)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.temat)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.wiadomosc)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.wiadomosc)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Powrót do listy</a>
+</div>
