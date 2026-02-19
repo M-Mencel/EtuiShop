@@ -161,12 +161,11 @@ namespace Etui.Areas.Admin.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     return NotFound();
-                }
+                }d
             }
 
             return View(product);
         }
-
 
         /*[Authorize(Roles = "Admin")]*/
         public async Task<IActionResult> Delete(long id)
