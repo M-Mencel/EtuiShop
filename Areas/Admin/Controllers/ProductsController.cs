@@ -114,46 +114,59 @@ namespace Etui.Areas.Admin.Controllers
                         return View(product);
                 }
 
-                [HttpPost]
-                [ValidateAntiForgeryToken]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         /*[Authorize(Roles = "Admin")]*/
-        public async Task<IActionResult> Edit(int id, Product product)
+        public async Task<IActionResult> Edit(long id, Product product)
+        {
+            if (id != product.Id)
+                return NotFound();
+
+            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
+
+            if (ModelState.IsValid)
+            {
+                product.Slug = product.Name.ToLower().Replace(" ", "-");
+
+                // 🔥 poprawione sprawdzanie
+                var slugExists = await _context.Products
+                    .AnyAsync(p => p.Slug == product.Slug && p.Id != product.Id);
+
+                if (slugExists)
                 {
-                        ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
-
-                        if (ModelState.IsValid)
-                        {
-                                product.Slug = product.Name.ToLower().Replace(" ", "-");
-
-                                var slug = await _context.Products.FirstOrDefaultAsync(p => p.Slug == product.Slug);
-                                if (slug != null)
-                                {
-                                        ModelState.AddModelError("", "The product already exists.");
-                                        return View(product);
-                                }
-
-                                if (product.ImageUpload != null)
-                                {
-                                        string uploadsDir = Path.Combine(_webHostEnvironment.WebRootPath, "media/products");
-                                        string imageName = Guid.NewGuid().ToString() + "_" + product.ImageUpload.FileName;
-
-                                        string filePath = Path.Combine(uploadsDir, imageName);
-
-                                        FileStream fs = new FileStream(filePath, FileMode.Create);
-                                        await product.ImageUpload.CopyToAsync(fs);
-                                        fs.Close();
-
-                                        product.Image = imageName;
-                                }
-
-                                _context.Update(product);
-                                await _context.SaveChangesAsync();
-
-                                TempData["Success"] = "The product has been edited!";
-                        }
-
-                        return View(product);
+                    ModelState.AddModelError("", "Product with this name already exists.");
+                    return View(product);
                 }
+
+                if (product.ImageUpload != null)
+                {
+                    string uploadsDir = Path.Combine(_webHostEnvironment.WebRootPath, "media/products");
+                    string imageName = Guid.NewGuid().ToString() + "_" + product.ImageUpload.FileName;
+                    string filePath = Path.Combine(uploadsDir, imageName);
+
+                    using (var fs = new FileStream(filePath, FileMode.Create))
+                    {
+                        await product.ImageUpload.CopyToAsync(fs);
+                    }
+
+                    product.Image = imageName;
+                }
+
+                try
+                {
+                    _context.Update(product);
+                    await _context.SaveChangesAsync();
+                    TempData["Success"] = "The product has been edited!";
+                    return RedirectToAction("Index");
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    return NotFound();
+                }
+            }
+
+            return View(product);
+        }
 
         /*[Authorize(Roles = "Admin")]*/
         public async Task<IActionResult> Delete(long id)
