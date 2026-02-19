@@ -128,7 +128,6 @@ namespace Etui.Areas.Admin.Controllers
             {
                 product.Slug = product.Name.ToLower().Replace(" ", "-");
 
-                // 🔥 poprawione sprawdzanie
                 var slugExists = await _context.Products
                     .AnyAsync(p => p.Slug == product.Slug && p.Id != product.Id);
 
