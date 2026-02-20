@@ -1,7 +1,10 @@
 ﻿using Etui.Helper;
+using Etui.Infrastructure;
 using Etui.Models;
+using Etui.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SendGrid.Helpers.Mail;
 using Stripe;
 using System.Data.Common;
 using System.Security.Cryptography.X509Certificates;
@@ -10,28 +13,69 @@ namespace Etui.Controllers
 {
     public class Checkout : Controller
     {
+        private readonly DataContext _context;
+        public Checkout(DataContext context)
+        {
+            _context = context;
+        }
 
-            [TempData]
+
         public string TotalAmount { get; set; }
 
         public IActionResult Index()
         {
             var cart = SessionHelper.GetObjectFromJson<List<CartItem>>(HttpContext.Session, "cart");
-            ViewBag.cart = cart;
-            if (cart != null && cart.Count() > 0)
+
+            if (cart == null || !cart.Any())
+                return RedirectToAction("Index", "Cart");
+
+            var total = cart.Sum(x => x.Price * x.Quantity);
+
+            var CartViewModel = new CartViewModel
             {
-                ViewBag.DollarAmount = cart.Sum(item => item.Price * item.Quantity);
-                ViewBag.total = Math.Round(ViewBag.DollarAmount, 2) * 100;
-                ViewBag.total = Convert.ToInt64(ViewBag.total);
-                long total = ViewBag.total;
-                TotalAmount = total.ToString();
-            }
+                CartItems = cart,
+                GrandTotal = total
+            };
+
+            return View(CartViewModel);
+        }
 
 
+        [HttpPost]
+        public IActionResult CreateOrder(CartViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View("Index", model);
+
+            var order = new Order
+            {
+                Imie = model.Dane.Imie,
+                Nazwisko = model.Dane.Nazwisko,
+                Email = model.Dane.Email,
+                Ulica = model.Dane.Ulica,
+                NrDomu = model.Dane.NrDomu,
+                NrLokalu = model.Dane.NrLokalu,
+                KodPocztowy = model.Dane.KodPocztowy,
+                Miejscowosc = model.Dane.Miejscowosc,
+                NrTelefonu = model.Dane.NrTelefonu,
+
+                TotalAmount = model.GrandTotal,
+                Status = "Pending",
+
+                Items = model.CartItems.Select(c => new OrderItem
+                {
+                    ProductId = c.ProductId,
+                    ProductName = c.ProductName,
+                    Quantity = c.Quantity,
+                    Price = c.Price
+                }).ToList()
+            };
+
+            _context.Orders.Add(order);
+            _context.SaveChanges();
 
 
-            //TempData["TotalAmount"] = TotalAmount;
-            return View();
+            return RedirectToAction("Success");
         }
 
 

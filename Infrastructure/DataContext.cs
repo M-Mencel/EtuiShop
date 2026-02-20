@@ -12,7 +12,15 @@ namespace Etui.Infrastructure
                 public DbSet<Product> Products { get; set; }
                 public DbSet<Category> Categories { get; set; }
         public object Dane { get; internal set; }
-        public DbSet<Etui.Models.Dane> Dane_1 { get; set; }
+        public DbSet<Dane> Dane_1 { get; set; }
         public DbSet<Etui.Models.Support> Support { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+
+/*        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<Order>()
+                .HasOne(cartItem-> );
+        }*/
     }
 }

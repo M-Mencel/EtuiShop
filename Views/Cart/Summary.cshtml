@@ -1,73 +1,146 @@
 ﻿@model CartViewModel
-
 @{
-    ViewData["Title"] = "Cart Overview";
+    ViewData["Title"] = "Checkout";
 }
 
-@foreach (var item in Model.CartItems)
-{
+<form asp-action="CreateOrder" method="post">
+    @Html.AntiForgeryToken()
 
+    <div class="container py-5">
+        <div class="row g-4">
 
-        <div class="col">
+            <!-- Left Side -->
+            <div class="col-lg-8">
 
-            <div class="card mb-4">
-              <div class="card-body p-4">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-4">
 
-                <div class="row align-items-center">
-                  <div class="col-md-2">
-                    <img src="~/media/products/@item.Image" class="img-fluid" alt="">
-                  </div>
-                  <div class="col-md-2 d-flex justify-content-center">
-                    <div>
-                      <p class="small text-muted mb-4 pb-2">Name</p>
-                      <p class="lead fw-normal mb-0">@item.ProductName</p>
+                        <h4 class="mb-4">Dane do wysyłki</h4>
+
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                <label asp-for="Dane.Imie" class="form-label"></label>
+                                <input asp-for="Dane.Imie" class="form-control" />
+                                <span asp-validation-for="Dane.Imie" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Dane.Nazwisko" class="form-label"></label>
+                                <input asp-for="Dane.Nazwisko" class="form-control" />
+                                <span asp-validation-for="Dane.Nazwisko" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="Dane.Email" class="form-label"></label>
+                                <input asp-for="Dane.Email" class="form-control" />
+                                <span asp-validation-for="Dane.Email" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-8">
+                                <label asp-for="Dane.Ulica" class="form-label"></label>
+                                <input asp-for="Dane.Ulica" class="form-control" />
+                            </div>
+
+                            <div class="col-md-2">
+                                <label asp-for="Dane.NrDomu" class="form-label"></label>
+                                <input asp-for="Dane.NrDomu" class="form-control" />
+                            </div>
+
+                            <div class="col-md-2">
+                                <label asp-for="Dane.NrLokalu" class="form-label"></label>
+                                <input asp-for="Dane.NrLokalu" class="form-control" />
+                            </div>
+
+                            <div class="col-md-4">
+                                <label asp-for="Dane.KodPocztowy" class="form-label"></label>
+                                <input asp-for="Dane.KodPocztowy" class="form-control" />
+                            </div>
+
+                            <div class="col-md-8">
+                                <label asp-for="Dane.Miejscowosc" class="form-label"></label>
+                                <input asp-for="Dane.Miejscowosc" class="form-control" />
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="Dane.NrTelefonu" class="form-label"></label>
+                                <input asp-for="Dane.NrTelefonu" class="form-control" />
+                            </div>
+
+                        </div>
+
                     </div>
-                  </div>
-                  <div class="col-md-2 d-flex justify-content-center">
-
-                  </div>
-                  <div class="col-md-2 d-flex justify-content-center">
-                    <div>
-                      <p class="small text-muted mb-4 pb-2">Ilość</p>
-                      <p class="lead fw-normal mb-0">@item.Quantity</p>
-                    </div>
-                  </div>
-                  <div class="col-md-2 d-flex justify-content-center">
-                    <div>
-                      <p class="small text-muted mb-4 pb-2">Cena</p>
-                      <p class="lead fw-normal mb-0">@item.Price.ToString("C2")</p>
-                    </div>
-                  </div>
-                  <div class="col-md-2 d-flex justify-content-center">
-                    <div>
-                      <p class="small text-muted mb-4 pb-2">Suma</p>
-                       <p class="lead fw-normal mb-0">@Model.CartItems.Where(x => x.ProductId == item.ProductId).Sum(x => x.Quantity * x.Price).ToString("C2")</p>
-                    </div>
-                  </div>
                 </div>
 
-              </div>
             </div>
 
-          
+            <!-- Right Side -->
+            <div class="col-lg-4">
 
-          </div>
+                <div class="position-sticky" style="top: 100px;">
 
-}
+                    <div class="card shadow-sm border-0 mb-3">
+                        <div class="card-body p-4">
 
-<div class="card mb-5">
-    <div class="card-body p-4">
+                            <h5 class="mb-3">Podsumowanie</h5>
 
-        <div class="float-end">
-            <p class="mb-0 me-5 d-flex align-items-center">
-                <span class="small text-muted me-2">Suma:</span>
-                <span class="lead fw-normal">@Model.GrandTotal.ToString("C2")</span>
-            </p>
+                            @foreach (var item in Model.CartItems)
+                            {
+                                <div class="d-flex justify-content-between align-items-center mb-2 small">
+
+                                    <div class="d-flex align-items-center">
+                                        <img src="@Url.Content($"~/media/products/{item.Image}")"
+                                             alt="@item.ProductName"
+                                             class="me-2 rounded"
+                                             style="width:40px; height:40px; object-fit:cover;" />
+
+                                        <span>
+                                            <b> @item.ProductName </b>
+                                            <span class="text-muted">ilość: <b>@item.Quantity</b></span>
+                                        </span>
+                                    </div>
+
+                                    <span>@item.Total.ToString("C2")</span>
+
+                                </div>
+                            }
+
+                            <hr />
+
+                            <div class="d-flex justify-content-between">
+                                <strong>Łącznie:</strong>
+                                <strong class="fs-5">@Model.GrandTotal.ToString("C2")</strong>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body p-4">
+
+                            <button type="submit"
+                                    class="btn btn-success w-100 mb-2 py-2">
+                                Złóż zamówienie
+                            </button>
+
+                            <a asp-controller="Cart"
+                               asp-action="Index"
+                               class="btn btn-outline-secondary w-100">
+                                Wróć do koszyka
+                            </a>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
-
     </div>
-</div>
 
-<div class="d-flex justify-content-end">
-    <a asp-controller="Checkout" asp-action="Index" class="btn btn-sm btn-outline-success">Zapłać</a>
-</div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
