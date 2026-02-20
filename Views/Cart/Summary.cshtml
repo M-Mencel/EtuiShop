@@ -3,7 +3,7 @@
     ViewData["Title"] = "Checkout";
 }
 
-<form asp-action="CreateOrder" method="post">
+<form asp-controller="Checkout" asp-action="CreateOrder" method="post">
     @Html.AntiForgeryToken()
 
     <div class="container py-5">
@@ -11,14 +11,12 @@
 
             <!-- Left Side -->
             <div class="col-lg-8">
-
                 <div class="card shadow-sm border-0">
                     <div class="card-body p-4">
 
                         <h4 class="mb-4">Dane do wysyłki</h4>
 
                         <div class="row g-3">
-
                             <div class="col-md-6">
                                 <label asp-for="Dane.Imie" class="form-label"></label>
                                 <input asp-for="Dane.Imie" class="form-control" />
@@ -40,68 +38,69 @@
                             <div class="col-md-8">
                                 <label asp-for="Dane.Ulica" class="form-label"></label>
                                 <input asp-for="Dane.Ulica" class="form-control" />
+                                <span asp-validation-for="Dane.Ulica" class="text-danger small"></span>
                             </div>
 
                             <div class="col-md-2">
                                 <label asp-for="Dane.NrDomu" class="form-label"></label>
                                 <input asp-for="Dane.NrDomu" class="form-control" />
+                                <span asp-validation-for="Dane.NrDomu" class="text-danger small"></span>
                             </div>
 
                             <div class="col-md-2">
                                 <label asp-for="Dane.NrLokalu" class="form-label"></label>
                                 <input asp-for="Dane.NrLokalu" class="form-control" />
+                                <span asp-validation-for="Dane.NrLokalu" class="text-danger small"></span>
                             </div>
 
                             <div class="col-md-4">
                                 <label asp-for="Dane.KodPocztowy" class="form-label"></label>
                                 <input asp-for="Dane.KodPocztowy" class="form-control" />
+                                <span asp-validation-for="Dane.KodPocztowy" class="text-danger small"></span>
                             </div>
 
                             <div class="col-md-8">
                                 <label asp-for="Dane.Miejscowosc" class="form-label"></label>
                                 <input asp-for="Dane.Miejscowosc" class="form-control" />
+                                <span asp-validation-for="Dane.Miejscowosc" class="text-danger small"></span>
                             </div>
 
                             <div class="col-12">
                                 <label asp-for="Dane.NrTelefonu" class="form-label"></label>
                                 <input asp-for="Dane.NrTelefonu" class="form-control" />
+                                <span asp-validation-for="Dane.NrTelefonu" class="text-danger small"></span>
                             </div>
-
                         </div>
 
                     </div>
                 </div>
-
             </div>
 
             <!-- Right Side -->
             <div class="col-lg-4">
-
                 <div class="position-sticky" style="top: 100px;">
+
 
                     <div class="card shadow-sm border-0 mb-3">
                         <div class="card-body p-4">
-
                             <h5 class="mb-3">Podsumowanie</h5>
 
                             @foreach (var item in Model.CartItems)
                             {
                                 <div class="d-flex justify-content-between align-items-center mb-2 small">
-
                                     <div class="d-flex align-items-center">
                                         <img src="@Url.Content($"~/media/products/{item.Image}")"
                                              alt="@item.ProductName"
                                              class="me-2 rounded"
                                              style="width:40px; height:40px; object-fit:cover;" />
 
-                                        <span>
-                                            <b> @item.ProductName </b>
+                                        <div>
+                                            <b>@item.ProductName</b><br />
                                             <span class="text-muted">ilość: <b>@item.Quantity</b></span>
-                                        </span>
+                                        </div>
                                     </div>
 
                                     <span>@item.Total.ToString("C2")</span>
-
                                 </div>
                             }
 
@@ -111,28 +110,18 @@
                                 <strong>Łącznie:</strong>
                                 <strong class="fs-5">@Model.GrandTotal.ToString("C2")</strong>
                             </div>
-
                         </div>
                     </div>
 
-                    <div class="card shadow-sm border-0">
-                        <div class="card-body p-4">
 
-                            <button type="submit"
-                                    class="btn btn-success w-100 mb-2 py-2">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body p-4 d-grid gap-2">
+
+                            <button type="submit" class="btn btn-success py-2">
                                 Złóż zamówienie
                             </button>
 
-                            <a asp-controller="Checkout"
-                               asp-action="Index"
-                               class="btn btn-outline-secondary w-100">
-                                Zamowienie
-                            </a>
-
-
-                            <a asp-controller="Cart"
-                               asp-action="Index"
-                               class="btn btn-outline-secondary w-100">
+                            <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-secondary py-2">
                                 Wróć do koszyka
                             </a>
 
@@ -140,12 +129,10 @@
                     </div>
 
                 </div>
-
             </div>
 
         </div>
     </div>
-
 </form>
 
 @section Scripts {

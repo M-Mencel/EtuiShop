@@ -25,7 +25,7 @@ namespace Etui.Controllers
 
         public IActionResult Index()
         {
-            var cart = SessionHelper.GetObjectFromJson<List<CartItem>>(HttpContext.Session, "cart");
+            var cart = SessionHelper.GetObjectFromJson<List<CartItem>>(HttpContext.Session, "Cart");
 
             if (cart == null || !cart.Any())
                 return RedirectToAction("Index", "Cart");
@@ -35,7 +35,8 @@ namespace Etui.Controllers
             var CartViewModel = new CartViewModel
             {
                 CartItems = cart,
-                GrandTotal = total
+                GrandTotal = total,
+                Dane = new Dane()
             };
 
             return View(CartViewModel);
@@ -43,10 +44,18 @@ namespace Etui.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult CreateOrder(CartViewModel model)
         {
             if (!ModelState.IsValid)
                 return View("Index", model);
+
+            var cart = SessionHelper.GetObjectFromJson<List<CartItem>>(HttpContext.Session, "Cart");
+
+            if (cart == null || !cart.Any())
+                return RedirectToAction("Index", "Cart");
+
+            var total = cart.Sum(x => x.Price * x.Quantity);
 
             var order = new Order
             {
@@ -60,10 +69,10 @@ namespace Etui.Controllers
                 Miejscowosc = model.Dane.Miejscowosc,
                 NrTelefonu = model.Dane.NrTelefonu,
 
-                TotalAmount = model.GrandTotal,
+                TotalAmount = total,
                 Status = OrderStatus.Pending,
 
-                Items = model.CartItems.Select(c => new OrderItem
+                Items = cart.Select(c => new OrderItem
                 {
                     ProductId = c.ProductId,
                     ProductName = c.ProductName,
@@ -75,8 +84,7 @@ namespace Etui.Controllers
             _context.Orders.Add(order);
             _context.SaveChanges();
 
-
-            return RedirectToAction("Success");
+            return RedirectToAction("Success", new { orderId = order.Id });
         }
 
 
@@ -105,7 +113,7 @@ namespace Etui.Controllers
                 order.Status = OrderStatus.Paid;
                 _context.SaveChanges();
 
-                HttpContext.Session.Remove("cart");
+                HttpContext.Session.Remove("Cart");
 
                 return RedirectToAction("Success", new { id = order.Id });
             }
@@ -118,14 +126,13 @@ namespace Etui.Controllers
 
         public IActionResult Success(int orderId)
         {
-            var order = _context.Orders.Include(o => o.Items)
-                                       .FirstOrDefault(o => o.Id == orderId);
-            if (order == null) return NotFound();
+            var order = _context.Orders
+                .Include(o => o.Items)
+                .ThenInclude(i => i.Product)
+                .FirstOrDefault(o => o.Id == orderId);
 
-            order.Status = OrderStatus.Paid;
-            _context.SaveChanges();
-
-            HttpContext.Session.Remove("cart");
+            if (order == null)
+                return NotFound();
 
             return View(order);
         }

@@ -1,0 +1,69 @@
+﻿@model Etui.Models.Order
+@{
+    ViewData["Title"] = "Potwierdzenie zamówienia";
+}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+
+                    <h3 class="mb-3 text-success">Dziękujemy za zamówienie!</h3>
+
+                    <p class="mb-1"><strong>Numer zamówienia:</strong> @Model.Id</p>
+                    <p class="mb-3">
+                        <strong>Status:</strong>
+                        @switch (Model.Status)
+                        {
+                            case Etui.Enums.OrderStatus.Pending:
+                                <span class="badge bg-warning text-dark">Pending</span>
+                                ; break;
+                            case Etui.Enums.OrderStatus.Paid:
+                                <span class="badge bg-success">Paid</span>
+                                ; break;
+                            case Etui.Enums.OrderStatus.Failed:
+                                <span class="badge bg-danger">Failed</span>
+                                ; break;
+                        }
+                    </p>
+
+                    <h5 class="mb-3">Produkty w zamówieniu:</h5>
+
+                    <div class="list-group mb-3">
+                        @foreach (var item in Model.Items)
+                        {
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <img src="@Url.Content($"~/media/products/{item.Product.Image}")"
+                                         alt="@item.ProductName"
+                                         class="me-3 rounded"
+                                         style="width:50px; height:50px; object-fit:cover;" />
+                                    <div>
+                                        <strong>@item.ProductName</strong><br />
+                                        <small>Ilość: @item.Quantity</small>
+                                    </div>
+                                </div>
+                                <span>@((item.Quantity*item.Price).ToString("C2"))</span>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <strong>Łącznie:</strong>
+                        <strong class="fs-5">@Model.TotalAmount.ToString("C2")</strong>
+                    </div>
+
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-primary w-100">
+                        Powrót do sklepu
+                    </a>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
