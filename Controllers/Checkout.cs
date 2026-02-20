@@ -1,4 +1,5 @@
-﻿using Etui.Helper;
+﻿using Etui.Enums;
+using Etui.Helper;
 using Etui.Infrastructure;
 using Etui.Models;
 using Etui.Models.ViewModels;
@@ -60,7 +61,7 @@ namespace Etui.Controllers
                 NrTelefonu = model.Dane.NrTelefonu,
 
                 TotalAmount = model.GrandTotal,
-                Status = "Pending",
+                Status = OrderStatus.Pending,
 
                 Items = model.CartItems.Select(c => new OrderItem
                 {
@@ -79,37 +80,56 @@ namespace Etui.Controllers
         }
 
 
-        public IActionResult Processing(string stripeToken, string stripeEmail)
+        [HttpPost]
+        public IActionResult ProcessPayment(int orderId, string stripeToken)
         {
-            var optionCust = new CustomerCreateOptions
-            {
-                Email = stripeEmail,
-                Name = "Rizwan Yousaf",
-                Phone = "338595119"
-            };
-            var serviceCust = new CustomerService();
-            Customer customer = serviceCust.Create(optionCust);
-            var optionsCharge = new ChargeCreateOptions
-            {
-                Amount = Convert.ToInt64(TempData["TotalAmount"]),
-                Currency = "USD",
-                Description = "Pet Selling amount",
-                Source = stripeToken,
-                ReceiptEmail = stripeEmail
+            var order = _context.Orders.Include(o => o.Items)
+                                       .FirstOrDefault(o => o.Id == orderId);
 
+            if (order == null)
+                return NotFound();
+
+            var options = new ChargeCreateOptions
+            {
+                Amount = (long)(order.TotalAmount * 100),
+                Currency = "usd",
+                Source = stripeToken,
+                Description = $"Order #{order.Id}"
             };
-            var serviceCharge = new ChargeService();
-            Charge charge = serviceCharge.Create(optionsCharge);
+
+            var service = new ChargeService();
+            var charge = service.Create(options);
+
             if (charge.Status == "succeeded")
             {
-                ViewBag.AmountPaid = Convert.ToDecimal(charge.Amount) % 100 / 100 + (charge.Amount) / 100;
-                ViewBag.Customer = customer.Name;
+                order.Status = OrderStatus.Paid;
+                _context.SaveChanges();
+
+                HttpContext.Session.Remove("cart");
+
+                return RedirectToAction("Success", new { id = order.Id });
             }
-            return View();
 
+            order.Status = OrderStatus.Failed;
+            _context.SaveChanges();
 
-
+            return RedirectToAction("Index");
         }
+
+        public IActionResult Success(int orderId)
+        {
+            var order = _context.Orders.Include(o => o.Items)
+                                       .FirstOrDefault(o => o.Id == orderId);
+            if (order == null) return NotFound();
+
+            order.Status = OrderStatus.Paid;
+            _context.SaveChanges();
+
+            HttpContext.Session.Remove("cart");
+
+            return View(order);
+        }
+
     }
 }
 
