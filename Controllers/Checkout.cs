@@ -137,7 +137,31 @@ namespace Etui.Controllers
             return View(order);
         }
 
+        public IActionResult Payment(int orderId)
+        {
+            var order = _context.Orders.FirstOrDefault(o => o.Id == orderId);
+
+            if (order == null)
+                return NotFound();
+
+            return View(order);
+        }
+
+        public IActionResult Processing(string stripeToken, string stripeEmail) 
+        { 
+            var optionCust = new CustomerCreateOptions { Email = stripeEmail, Name = "Rizwan Yousaf", Phone = "338595119" }; 
+            var serviceCust = new CustomerService(); 
+            Customer customer = serviceCust.Create(optionCust); 
+            var optionsCharge = new ChargeCreateOptions { Amount = Convert.ToInt64(TempData["TotalAmount"]), Currency = "USD", Description = "Pet Selling amount", Source = stripeToken, ReceiptEmail = stripeEmail }; 
+            var serviceCharge = new ChargeService(); Charge charge = serviceCharge.Create(optionsCharge); 
+            if (charge.Status == "succeeded") 
+            { 
+                ViewBag.AmountPaid = Convert.ToDecimal(charge.Amount) % 100 / 100 + (charge.Amount) / 100; ViewBag.Customer = customer.Name; } 
+            return View(); 
+        }
     }
 }
+    
+
 
 

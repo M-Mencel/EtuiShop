@@ -56,6 +56,28 @@
                         <strong class="fs-5">@Model.TotalAmount.ToString("C2")</strong>
                     </div>
 
+
+                    @if (Model.Status == Etui.Enums.OrderStatus.Pending)
+                    {
+                        <div class="alert alert-warning">
+                            Zamówienie oczekuje na płatność.
+                        </div>
+
+                        <a asp-action="Payment"
+                           asp-route-orderId="@Model.Id"
+                           class="btn btn-primary w-100">
+                            Przejdź do płatności
+                        </a>
+                    }
+
+                    @if (Model.Status == Etui.Enums.OrderStatus.Paid)
+                    {
+                        <div class="alert alert-success">
+                            Płatność została zaksięgowana.
+                        </div>
+                    }
+                    <br>
+                    <br />
                     <a asp-controller="Home" asp-action="Index" class="btn btn-primary w-100">
                         Powrót do sklepu
                     </a>

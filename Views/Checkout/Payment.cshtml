@@ -1,0 +1,20 @@
+﻿@model Order
+
+<div class="container mt-5">
+    <div class="card shadow p-4">
+        <h3>Podsumowanie płatności</h3>
+
+        <p><strong>Numer zamówienia:</strong> @Model.Id</p>
+        <p><strong>Kwota do zapłaty:</strong> @Model.TotalAmount.ToString("C")</p>
+
+        <hr />
+
+        <form asp-action="Index" method="post">
+            <input type="hidden" name="orderId" value="@Model.Id" />
+
+            <button type="submit" class="btn btn-success">
+                Zapłać teraz
+            </button>
+        </form>
+    </div>
+</div>
